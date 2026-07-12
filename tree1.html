@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Дерево решений — бронирование комнаты</title>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose',
+      flowchart: {
+        nodeSpacing: 45,
+        rankSpacing: 70,
+        curve: 'basis'
+      }
+    });
+  </script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #f3f7ff 0%, #ffffff 100%);
+      color: #1f2937;
+    }
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 32px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+    .header {
+      padding: 24px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+    }
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+    .header p {
+      margin: 0;
+      opacity: .95;
+    }
+    .content {
+      padding: 20px;
+    }
+    .diagram {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 16px;
+      overflow: auto;
+      min-height: 760px;
+    }
+    .mermaid {
+      min-width: 1000px;
+    }
+    .mermaid svg {
+      width: 100% !important;
+      height: auto !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="header">
+        <h1>Дерево решений</h1>
+        <p>Бронирование комнаты в отеле</p>
+      </div>
+
+      <div class="content">
+        <div class="diagram">
+          <div class="mermaid">
+flowchart TD
+    A{Пользователь авторизован?}
+    A -->|Да| B{Комната доступна?}
+    A -->|Нет| X[Нужно войти в систему]
+
+    B -->|Да| C{Данные гостя корректны?}
+    B -->|Нет| Y[Комната занята]
+
+    C -->|Да| D{Способ оплаты выбран?}
+    C -->|Нет| Z[Ошибка в данных гостя]
+
+    D -->|Да| E{Способ оплаты доступен?}
+    D -->|Нет| W[Оплата не выбрана]
+
+    E -->|Да| F[Бронирование успешно создано]
+    E -->|Нет| V[Ошибка оплаты]
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

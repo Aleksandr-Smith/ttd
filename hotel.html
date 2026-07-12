@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Форма бронирования</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #f3f7ff 0%, #ffffff 100%);
+      color: #1f2937;
+    }
+
+    .wrapper {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 16px 40px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 24px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+    }
+
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .header p {
+      margin: 0;
+      opacity: .95;
+    }
+
+    .content {
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      font-weight: 700;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+      background: #fff;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    .field.error input,
+    .field.error select {
+      border-color: #dc2626;
+      background: #fef2f2;
+      box-shadow: 0 0 0 3px rgba(220,38,38,.08);
+    }
+
+    .error-text {
+      min-height: 18px;
+      color: #dc2626;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s ease;
+    }
+
+    .btn:hover {
+      background: #1d4ed8;
+    }
+
+    .result {
+      padding: 16px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      min-height: 52px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.5;
+    }
+
+    .ok {
+      color: #15803d;
+      background: #ecfdf5;
+      border-color: #bbf7d0;
+    }
+
+    .bad {
+      color: #dc2626;
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+
+    @media (max-width: 640px) {
+      .header h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="header">
+        <h1>Бронирование комнаты</h1>
+        <p>Заполните данные и подтвердите бронирование</p>
+      </div>
+
+      <div class="content">
+        <div class="field" id="guestField">
+          <label for="guest">Имя гостя</label>
+          <input type="text" id="guest" />
+          <div class="error-text" id="guestError"></div>
+        </div>
+
+        <div class="field" id="roomField">
+          <label for="room">Номер комнаты</label>
+          <select id="room">
+            <option value="">Выберите комнату</option>
+            <option value="101">101</option>
+            <option value="102">102</option>
+            <option value="201">201</option>
+            <option value="202">202</option>
+          </select>
+          <div class="error-text" id="roomError"></div>
+        </div>
+
+        <div class="field" id="checkinField">
+          <label for="checkin">Дата заезда</label>
+          <input type="date" id="checkin" />
+          <div class="error-text" id="checkinError"></div>
+        </div>
+
+        <div class="field" id="checkoutField">
+          <label for="checkout">Дата выезда</label>
+          <input type="date" id="checkout" />
+          <div class="error-text" id="checkoutError"></div>
+        </div>
+
+        <div class="field" id="paymentField">
+          <label for="payment">Способ оплаты</label>
+          <select id="payment">
+            <option value="">Выберите способ оплаты</option>
+            <option value="card">Банковская карта</option>
+            <option value="cash">Наличные</option>
+            <option value="online">Онлайн-оплата</option>
+          </select>
+          <div class="error-text" id="paymentError"></div>
+        </div>
+
+        <button class="btn" onclick="bookRoom()">Забронировать</button>
+
+        <div class="result" id="result">Заполните форму и нажмите «Забронировать»</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function clearErrors() {
+      const fields = ['guestField', 'roomField', 'checkinField', 'checkoutField', 'paymentField'];
+      const errors = ['guestError', 'roomError', 'checkinError', 'checkoutError', 'paymentError'];
+
+      fields.forEach(id => document.getElementById(id).classList.remove('error'));
+      errors.forEach(id => document.getElementById(id).textContent = '');
+
+      const result = document.getElementById('result');
+      result.className = 'result';
+    }
+
+    function setError(fieldId, errorId, message) {
+      document.getElementById(fieldId).classList.add('error');
+      document.getElementById(errorId).textContent = message;
+    }
+
+    function bookRoom() {
+      clearErrors();
+
+      const guest = document.getElementById('guest').value.trim();
+      const room = document.getElementById('room').value;
+      const checkin = document.getElementById('checkin').value;
+      const checkout = document.getElementById('checkout').value;
+      const payment = document.getElementById('payment').value;
+      const result = document.getElementById('result');
+
+      const guestRegex = /^[A-Za-zА-Яа-яЁё\s-]{2,50}$/;
+      let hasError = false;
+
+      if (!guest) {
+        setError('guestField', 'guestError', 'Введите имя гостя');
+        hasError = true;
+      } else if (!guestRegex.test(guest)) {
+        setError('guestField', 'guestError', 'Имя гостя введено некорректно');
+        hasError = true;
+      }
+
+      if (!room) {
+        setError('roomField', 'roomError', 'Выберите номер комнаты');
+        hasError = true;
+      } else if (room === '102') {
+        setError('roomField', 'roomError', 'Выбранная комната уже занята');
+        hasError = true;
+      }
+
+      if (!checkin) {
+        setError('checkinField', 'checkinError', 'Выберите дату заезда');
+        hasError = true;
+      }
+
+      if (!checkout) {
+        setError('checkoutField', 'checkoutError', 'Выберите дату выезда');
+        hasError = true;
+      }
+
+      if (checkin && checkout && checkout <= checkin) {
+        setError('checkoutField', 'checkoutError', 'Дата выезда должна быть позже даты заезда');
+        hasError = true;
+      }
+
+      if (!payment) {
+        setError('paymentField', 'paymentError', 'Выберите способ оплаты');
+        hasError = true;
+      }
+
+      if (!hasError) {
+        result.className = 'result ok';
+        result.textContent = 'Бронирование успешно создано';
+      } else {
+        result.className = 'result bad';
+        result.textContent = 'Исправьте ошибки в форме';
+      }
+    }
+  </script>
+</body>
+</html>

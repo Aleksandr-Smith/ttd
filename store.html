@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Каталог смартфонов</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #111827;
+    }
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+    }
+    .sidebar, .catalog {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+    }
+    .sidebar {
+      padding: 20px;
+      position: sticky;
+      top: 20px;
+      align-self: start;
+      max-height: calc(100vh - 40px);
+      overflow: auto;
+    }
+    .catalog {
+      padding: 20px;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+    }
+    h2 {
+      margin: 22px 0 12px;
+      font-size: 18px;
+    }
+    .group {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      padding: 6px 0;
+    }
+    .check input {
+      width: 16px;
+      height: 16px;
+    }
+    .buttons {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .apply-btn, .reset-btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .apply-btn {
+      background: #2563eb;
+      color: #fff;
+    }
+    .apply-btn:hover {
+      background: #1d4ed8;
+    }
+    .reset-btn {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .reset-btn:hover {
+      background: #d1d5db;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .count {
+      color: #2563eb;
+      font-weight: 700;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fff;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+    }
+    .thumb {
+      height: 170px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 68px;
+      color: #fff;
+      font-weight: 700;
+    }
+    .content {
+      padding: 16px;
+      display: grid;
+      gap: 8px;
+    }
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .meta {
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .price {
+      font-size: 20px;
+      font-weight: 700;
+      color: #16a34a;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 700;
+      width: fit-content;
+    }
+    .empty {
+      padding: 30px;
+      text-align: center;
+      color: #6b7280;
+      border: 1px dashed #cbd5e1;
+      border-radius: 16px;
+      grid-column: 1 / -1;
+    }
+    @media (max-width: 920px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        position: static;
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <aside class="sidebar">
+      <h1>Фильтры</h1>
+
+      <h2>Производитель</h2>
+      <div class="group" id="manufacturerFilters">
+        <label class="check"><input type="checkbox" value="Apple"> Apple</label>
+        <label class="check"><input type="checkbox" value="Honor"> Honor</label>
+        <label class="check"><input type="checkbox" value="Huawei"> Huawei</label>
+        <label class="check"><input type="checkbox" value="Samsung"> Samsung</label>
+        <label class="check"><input type="checkbox" value="Xiaomi"> Xiaomi</label>
+        <label class="check"><input type="checkbox" value="Sony"> Sony</label>
+        <label class="check"><input type="checkbox" value="OnePlus"> OnePlus</label>
+      </div>
+
+      <h2>Цвет</h2>
+      <div class="group" id="colorFilters">
+        <label class="check"><input type="checkbox" value="черный"> черный</label>
+        <label class="check"><input type="checkbox" value="серый"> серый</label>
+        <label class="check"><input type="checkbox" value="белый"> белый</label>
+        <label class="check"><input type="checkbox" value="синий"> синий</label>
+        <label class="check"><input type="checkbox" value="красный"> красный</label>
+        <label class="check"><input type="checkbox" value="зеленый"> зеленый</label>
+        <label class="check"><input type="checkbox" value="желтый"> желтый</label>
+      </div>
+
+      <h2>Год выпуска</h2>
+      <div class="group" id="yearFilters">
+        <label class="check"><input type="checkbox" value="2026"> 2026</label>
+        <label class="check"><input type="checkbox" value="2025"> 2025</label>
+        <label class="check"><input type="checkbox" value="2024"> 2024</label>
+        <label class="check"><input type="checkbox" value="2023"> 2023</label>
+      </div>
+
+      <h2>Память</h2>
+      <div class="group" id="memoryFilters">
+        <label class="check"><input type="checkbox" value="1024"> 1024 ГБ</label>
+        <label class="check"><input type="checkbox" value="512"> 512 ГБ</label>
+        <label class="check"><input type="checkbox" value="256"> 256 ГБ</label>
+      </div>
+
+      <div class="buttons">
+        <button class="apply-btn" onclick="renderProducts()">Применить фильтр</button>
+        <button class="reset-btn" onclick="resetFilters()">Сбросить фильтр</button>
+      </div>
+    </aside>
+
+    <main class="catalog">
+      <div class="topbar">
+        <h1>Смартфоны</h1>
+        <div class="count">Показано товаров: <span id="count">0</span></div>
+      </div>
+
+      <div class="grid" id="products"></div>
+    </main>
+  </div>
+
+  <script>
+    const products = [
+      { name: 'Apple iPhone 16 Pro', manufacturer: 'Apple', color: 'черный', year: '2026', memory: '1024', price: 189990, icon: '', bg: 'linear-gradient(135deg,#111827,#4b5563)' },
+      { name: 'Samsung Galaxy S26 Ultra', manufacturer: 'Samsung', color: 'синий', year: '2026', memory: '512', price: 149990, icon: 'S', bg: 'linear-gradient(135deg,#2563eb,#06b6d4)' },
+      { name: 'Xiaomi 15 Pro', manufacturer: 'Xiaomi', color: 'белый', year: '2025', memory: '512', price: 99990, icon: 'X', bg: 'linear-gradient(135deg,#d1d5db,#6b7280)' },
+      { name: 'Honor Magic7', manufacturer: 'Honor', color: 'красный', year: '2025', memory: '256', price: 79990, icon: 'H', bg: 'linear-gradient(135deg,#dc2626,#f97316)' },
+      { name: 'Huawei Pura 80', manufacturer: 'Huawei', color: 'зеленый', year: '2024', memory: '256', price: 89990, icon: 'H', bg: 'linear-gradient(135deg,#16a34a,#84cc16)' },
+      { name: 'Sony Xperia 1 VII', manufacturer: 'Sony', color: 'серый', year: '2024', memory: '512', price: 119990, icon: 'S', bg: 'linear-gradient(135deg,#374151,#9ca3af)' },
+      { name: 'OnePlus 14', manufacturer: 'OnePlus', color: 'черный', year: '2026', memory: '256', price: 89990, icon: '1+', bg: 'linear-gradient(135deg,#0f172a,#334155)' },
+      { name: 'Samsung Galaxy A76', manufacturer: 'Samsung', color: 'желтый', year: '2023', memory: '256', price: 49990, icon: 'S', bg: 'linear-gradient(135deg,#eab308,#f59e0b)' },
+      { name: 'Xiaomi Redmi Note 14 Pro', manufacturer: 'Xiaomi', color: 'синий', year: '2024', memory: '256', price: 34990, icon: 'X', bg: 'linear-gradient(135deg,#2563eb,#60a5fa)' },
+      { name: 'Apple iPhone 15', manufacturer: 'Apple', color: 'белый', year: '2025', memory: '512', price: 119990, icon: '', bg: 'linear-gradient(135deg,#1f2937,#9ca3af)' }
+    ];
+
+    function checkedValues(groupId) {
+      return [...document.querySelectorAll(`#${groupId} input:checked`)].map(i => i.value);
+    }
+
+    function renderProducts() {
+      const manufacturers = checkedValues('manufacturerFilters');
+      const colors = checkedValues('colorFilters');
+      const years = checkedValues('yearFilters');
+      const memories = checkedValues('memoryFilters');
+
+      const filtered = products.filter(p => {
+        const matchManufacturer = manufacturers.length === 0 || manufacturers.includes(p.manufacturer);
+        const matchColor = colors.length === 0 || colors.includes(p.color);
+        const matchYear = years.length === 0 || years.includes(p.year);
+        const matchMemory = memories.length === 0 || memories.includes(p.memory);
+        return matchManufacturer && matchColor && matchYear && matchMemory;
+      });
+
+      const container = document.getElementById('products');
+      document.getElementById('count').textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty">Товары по выбранным фильтрам не найдены</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(p => `
+        <div class="card">
+          <div class="thumb" style="background:${p.bg}">${p.icon}</div>
+          <div class="content">
+            <div class="badge">${p.manufacturer}</div>
+            <div class="title">${p.name}</div>
+            <div class="meta">Цвет: ${p.color}<br>Год выпуска: ${p.year}<br>Память: ${p.memory} ГБ</div>
+            <div class="price">${p.price.toLocaleString('ru-RU')} ₽</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function resetFilters() {
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      renderProducts();
+    }
+
+    renderProducts();
+  </script>
+</body>
+</html>

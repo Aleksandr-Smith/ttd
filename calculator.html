@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Калькулятор</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #eef4ff 0%, #ffffff 100%);
+      color: #1f2937;
+    }
+    .wrapper {
+      max-width: 650px;
+      margin: 0 auto;
+      padding: 40px 16px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+    .header {
+      padding: 24px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+    }
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+    .header p {
+      margin: 0;
+      opacity: .95;
+    }
+    .content {
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+    .field label {
+      font-weight: 700;
+    }
+    .field input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+    }
+    .field input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+    .error {
+      min-height: 18px;
+      color: #dc2626;
+      font-size: 14px;
+    }
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #2563eb;
+      color: #fff;
+    }
+    .btn:hover {
+      background: #1d4ed8;
+    }
+    .result {
+      min-height: 24px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #f8fafc;
+      font-weight: 700;
+    }
+    .ok { color: #15803d; }
+    .bad { color: #dc2626; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="header">
+        <h1>Калькулятор</h1>
+      </div>
+
+      <div class="content">
+        <div class="field">
+          <label for="value1">Первое значение</label>
+          <input type="text" id="value1" placeholder="Например: 25" />
+          <div class="error" id="error1"></div>
+        </div>
+
+        <div class="field">
+          <label for="operation">Операция</label>
+          <input type="text" id="operation" placeholder="+, -, *, /" maxlength="1" />
+          <div class="error" id="errorOp"></div>
+        </div>
+
+        <div class="field">
+          <label for="value2">Второе значение</label>
+          <input type="text" id="value2" placeholder="Например: -3" />
+          <div class="error" id="error2"></div>
+        </div>
+
+        <div class="buttons">
+          <button class="btn" onclick="calculate()">Посчитать</button>
+        </div>
+
+        <div class="result" id="result"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function validateInteger(value) {
+      if (value.trim() === '') {
+        return 'Поле не заполнено';
+      }
+
+      const regex = /^[+-]?\d+$/;
+      if (!regex.test(value)) {
+        return 'Некорректное значение поля';
+      }
+
+      const num = Number(value);
+      if (!Number.isInteger(num)) {
+        return 'Некорректное значение поля';
+      }
+
+      if (num < -999 || num > 999) {
+        return 'Значение должно быть от -999 до 999';
+      }
+
+      return '';
+    }
+
+    function validateOperation(op) {
+      if (op.trim() === '') {
+        return 'Поле не заполнено';
+      }
+      if (!['+', '-', '*', '/'].includes(op)) {
+        return 'Некорректное значение поля';
+      }
+      return '';
+    }
+
+    function calculate() {
+      const v1 = document.getElementById('value1').value.trim();
+      const v2 = document.getElementById('value2').value.trim();
+      const op = document.getElementById('operation').value.trim();
+
+      const error1 = document.getElementById('error1');
+      const error2 = document.getElementById('error2');
+      const errorOp = document.getElementById('errorOp');
+      const result = document.getElementById('result');
+
+      error1.textContent = '';
+      error2.textContent = '';
+      errorOp.textContent = '';
+      result.textContent = '';
+      result.className = 'result';
+
+      const msg1 = validateInteger(v1);
+      const msg2 = validateInteger(v2);
+      const msgOp = validateOperation(op);
+
+      if (msg1) error1.textContent = msg1;
+      if (msg2) error2.textContent = msg2;
+      if (msgOp) errorOp.textContent = msgOp;
+
+      if (msg1 || msg2 || msgOp) {
+        result.textContent = 'Исправьте ошибки в полях';
+        result.classList.add('bad');
+        return;
+      }
+
+      const a = Number(v1);
+      const b = Number(v2);
+      let answer;
+
+      switch (op) {
+        case '+': answer = a + b; break;
+        case '-': answer = a - b; break;
+        case '*': answer = a * b; break;
+        case '/':
+          if (b === 0) {
+            error2.textContent = 'Деление на ноль невозможно';
+            result.textContent = 'Исправьте ошибки в полях';
+            result.classList.add('bad');
+            return;
+          }
+          answer = a / b;
+          break;
+      }
+
+      result.textContent = `Результат: ${answer}`;
+      result.classList.add('ok');
+    }
+  </script>
+</body>
+</html>

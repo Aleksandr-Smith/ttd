@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Проверка серийного номера</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #f3f7ff 0%, #ffffff 100%);
+      color: #1f2937;
+    }
+
+    .wrapper {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 16px 40px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 24px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+    }
+
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .header p {
+      margin: 0;
+      opacity: .95;
+    }
+
+    .content {
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      font-weight: 700;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s ease;
+    }
+
+    .btn:hover {
+      background: #1d4ed8;
+    }
+
+    .result {
+      padding: 16px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      min-height: 52px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.5;
+    }
+
+    .ok {
+      color: #15803d;
+      background: #ecfdf5;
+      border-color: #bbf7d0;
+    }
+
+    .bad {
+      color: #dc2626;
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+
+    .rules {
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 640px) {
+      .header h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="header">
+        <h1>Проверка серийного номера</h1>
+        <p>Введите серийный номер оборудования для проверки</p>
+      </div>
+
+      <div class="content">
+        <div class="rules">
+          Правила серийного номера:<br />
+          • Длина 10–12 символов;<br />
+          • Первые 4 символа — цифры;<br />
+          • Далее 2 заглавные буквы латиницы;<br />
+          • Остальные символы — цифры.<br />
+          Образец: 1234WW5678
+        </div>
+
+        <div class="field">
+          <label for="serial">Серийный номер</label>
+          <input type="text" id="serial" />
+        </div>
+
+        <button class="btn" onclick="checkSerial()">Проверить</button>
+
+        <div class="result" id="result">Введите серийный номер и нажмите «Проверить»</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function checkSerial() {
+      const serial = document.getElementById('serial').value;
+      const result = document.getElementById('result');
+
+      const serialRegex = /^\d{4}[A-Z]{2}\d{4,6}$/;
+
+      if (!serial) {
+        result.className = 'result';
+        result.textContent = 'Введите серийный номер';
+        return;
+      }
+
+      if (serial.startsWith(' ') || serial.endsWith(' ')) {
+        result.className = 'result bad';
+        result.textContent = 'Ошибка: пробелы в начале или конце строки недопустимы';
+        return;
+      }
+
+      if (!serialRegex.test(serial)) {
+        result.className = 'result bad';
+        result.textContent = 'Некорректный серийный номер';
+        return;
+      }
+
+      result.className = 'result ok';
+      result.textContent = 'Серийный номер корректен';
+    }
+  </script>
+</body>
+</html>
